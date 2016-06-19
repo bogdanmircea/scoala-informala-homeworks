@@ -1,0 +1,10 @@
+elf 888888888 robocop 
+snoop 444444444 robocop 
+ronaldo 555555555 superman 
+dickinson 999999999 robocop 
+basescu 123456789 funar 
+billa 666666666 funar 
+sisu 777777777 robocop 
+bogdan 111111111 robocop 
+rihana 222222222 tarzan 
+carlos 333333333 tarzan 
