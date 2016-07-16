@@ -7,15 +7,17 @@ import ro.sci.ticketapplication.NotEnoughTicketsException;
 import ro.sci.ticketapplication.Ticket;
 import ro.sci.ticketapplication.TicketBooth;
 import ro.sci.ticketapplication.TicketsSoldOutExcetion;
+
 /**
  * This is the Test Class were we tested our app.
+ * 
  * @author Bobo
  *
  */
 public class TicketApplicationTest {
 
 	@Test
-	public void testAddMethod() throws NotEnoughTicketsException {
+	public void testMethods() throws NotEnoughTicketsException, CategoryEarlyBirdTicketsSoldoutException, TicketsSoldOutExcetion {
 
 		Ticket ticket = new Ticket(100);
 
@@ -23,18 +25,11 @@ public class TicketApplicationTest {
 
 		tickets.add(ticket);
 
-		try {
-			tickets.sellTicket(ticket, 90);
-		}
-		catch (TicketsSoldOutExcetion e) {
+		tickets.print(ticket);
 
-			System.out.println("No more Tickets.\n");
-		}
+		tickets.sellTicket(ticket, 90);
 
-		catch (CategoryEarlyBirdTicketsSoldoutException e) {
-
-			System.out.println("No more EarlyBird Tickets\n");
-		}
+		tickets.calculateEarnings();
 	}
 
 }

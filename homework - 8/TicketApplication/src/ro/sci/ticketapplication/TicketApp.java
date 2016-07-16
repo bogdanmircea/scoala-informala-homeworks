@@ -1,12 +1,14 @@
 package ro.sci.ticketapplication;
+
 /**
  * This is the main class.
+ * 
  * @author Bobo
  *
  */
 public class TicketApp {
 
-	public static void main(String[] args) throws NotEnoughTicketsException {
+	public static void main(String[] args) throws NotEnoughTicketsException, CategoryEarlyBirdTicketsSoldoutException, TicketsSoldOutExcetion {
 
 		Ticket ticket = new Ticket(100);
 
@@ -16,18 +18,9 @@ public class TicketApp {
 
 		tickets.print(ticket);
 
-		try {
-			tickets.sellTicket(ticket, 65);
-		}
-		catch (TicketsSoldOutExcetion e) {
+		tickets.sellTicket(ticket, 100);
 
-			System.out.println("No more Tickets.\n");
-		}
-
-		catch (CategoryEarlyBirdTicketsSoldoutException e) {
-
-			System.out.println("No more EarlyBird tickets:\n");
-		}
-
+		tickets.calculateEarnings();
 	}
+
 }

@@ -1,6 +1,8 @@
 package ro.sci.ticketapplication;
+
 /**
  * This is the Ticket class.
+ * 
  * @author Bobo
  *
  */
@@ -12,11 +14,12 @@ public class Ticket {
 		this.quantity = quantity;
 	}
 
-	public Ticket() {
-	}
-
 	public int getQuantity() {
 		return quantity;
+	}
+
+	public void calculatePrice(int price) {
+		System.out.println();
 	}
 
 }

@@ -12,20 +12,16 @@ import java.util.TreeMap;
  */
 public class TicketBooth {
 
-	Ticket ticket = new Ticket();
-
 	String category1 = "Early Bird tickets";
 	String category2 = "Normal tickets";
 	String category3 = "VIP tickets";
 
+	private int earlyBirdPrice = 50;
+	private int normalTicketPrice = 80;
+	private int vipTicketPrice = 120;
+
 	Map<String, Integer> tickets = new TreeMap<String, Integer>();
 
-	/**
-	 * The add method calculates how many tickets we have in each category.
-	 * 
-	 * @param ticket
-	 *            returns the quantity of how many tickets we have.
-	 */
 	public void add(Ticket ticket) {
 
 		int x = ticket.getQuantity();
@@ -42,111 +38,101 @@ public class TicketBooth {
 
 	}
 
-	/**
-	 * The print method just prints our tickets.
-	 * 
-	 * @param ticket
-	 */
 	public void print(Ticket ticket) {
-
+		System.out.println("Available tickets: ");
 		for (Map.Entry<String, Integer> ticketinfo : tickets.entrySet()) {
-			System.out.println(ticketinfo.getKey() + ": " + ticketinfo.getValue());
-			System.out.println();
+			System.out.println("\t" + ticketinfo.getKey() + ": " + ticketinfo.getValue());
 		}
-
+		System.out.println();
 	}
 
-	/**
-	 * This is the sell method which allows the buyer to buy how many tickets he
-	 * wants.
-	 * 
-	 * @param ticket
-	 *            we need this to know the quantity.
-	 * @param soldTickets
-	 *            represents how many tickets we want to sell.
-	 * @throws NotEnoughTicketsException
-	 *             if somebody wants to buy more tickets then there are.
-	 * @throws CategoryEarlyBirdTicketsSoldoutException
-	 *             is thrown when the Early Bird Category is empty.
-	 * @throws TicketsSoldOutExcetion
-	 *             is thrown when all the tickets are sold.
-	 */
+	int soldEarlyBirdTicket = 0;
+	int soldNormalTicket = 0;
+	int soldVipTicket = 0;
+
 	public void sellTicket(Ticket ticket, int soldTickets)
 			throws NotEnoughTicketsException, CategoryEarlyBirdTicketsSoldoutException, TicketsSoldOutExcetion {
 
 		int ticketQuantity = ticket.getQuantity();
-		// this for loop is for the 17'th customer which will buy 3 tickets.
 		for (int i = 0; i <= ticketQuantity; i += soldTickets) {
 			if (soldTickets % 17 == 0)
 				soldTickets += 3;
 		}
 
 		if (soldTickets > ticketQuantity) {
-			throw new NotEnoughTicketsException();
-
+			try {
+				throw new NotEnoughTicketsException();
+			}
+			catch (NotEnoughTicketsException e) {
+				System.out.println("You can't buy: " + soldTickets + " tickets. " + "Maximum tickets that can be bought: " + ticketQuantity);
+			}
+			return;
 		}
 
-		int firstCategory = (ticketQuantity * 50) / 100;
-		int secondCategory = (ticketQuantity * 35) / 100;
-		int thirdCategory = (ticketQuantity * 15) / 100;
+		int earlyBirdTicketsLeft = (ticketQuantity * 50) / 100;
+		int normalTicketsLeft = (ticketQuantity * 35) / 100;
+		int vipTicketsLeft = (ticketQuantity * 15) / 100;
 
-		if (soldTickets <= firstCategory) {
-			int soldEarlyBirdTicket = soldTickets;
-			System.out.println(firstCategory);
-			System.out.println(
-					"Sold Early Bird Tickets: " + soldEarlyBirdTicket + " - Price: 50RON " + " - Income: " + (soldEarlyBirdTicket * 50) + "RON");
-			System.out.println("Total: " + soldEarlyBirdTicket * 50);
+		if (soldTickets <= earlyBirdTicketsLeft) {
+			soldEarlyBirdTicket = soldTickets;
+			earlyBirdTicketsLeft = earlyBirdTicketsLeft - soldTickets;
 		}
-		else if (soldTickets > firstCategory && soldTickets <= (ticketQuantity * 85) / 100) {
-			int soldEarlyBirdTicket = firstCategory;
-			int soldNormalTicket = soldTickets - firstCategory;
-			System.out.println(
-					"Sold Early Bird Tickets: " + soldEarlyBirdTicket + " - Price: 50RON " + " - Income: " + (soldEarlyBirdTicket * 50) + "RON");
-			System.out.println("Sold Normal Tickets: " + soldNormalTicket + " - Price: 80RON " + " - Income: " + (soldNormalTicket * 80) + "RON");
-			System.out.println("Total: " + ((soldEarlyBirdTicket * 50) + (soldNormalTicket * 80)));
+		else if (soldTickets > earlyBirdTicketsLeft && soldTickets <= (ticketQuantity * 85) / 100) {
+			soldEarlyBirdTicket = earlyBirdTicketsLeft;
+			soldNormalTicket = soldTickets - earlyBirdTicketsLeft;
+			normalTicketsLeft = ticketQuantity - soldTickets - vipTicketsLeft;
+			earlyBirdTicketsLeft -= earlyBirdTicketsLeft;
 		}
 		else if (soldTickets > ((ticketQuantity * 85) / 100) && (soldTickets <= ticketQuantity)) {
-			int soldEarlyBirdTicket = firstCategory;
-			int soldNormalTicket = secondCategory;
-			int soldVipTicket = soldTickets - (firstCategory + secondCategory);
-			System.out.println(
-					"Sold Early Bird Tickets: " + soldEarlyBirdTicket + " - Price: 50RON " + " - Income: " + (soldEarlyBirdTicket * 50) + "RON");
-			System.out.println("Sold Normal Tickets: " + soldNormalTicket + " - Price: 80RON " + " - Income: " + (soldNormalTicket * 80) + "RON");
-			System.out.println("Sold Vip Tickets: " + soldVipTicket + " - Price: 120RON " + " - Income: " + (soldVipTicket * 120) + "RON");
-			System.out.println("Total: " + ((soldEarlyBirdTicket * 50) + (soldNormalTicket * 80) + (soldVipTicket * 120)));
-		}
-		if (soldTickets <= (ticketQuantity * 50) / 100) {
-			firstCategory = firstCategory - soldTickets;
+			soldEarlyBirdTicket = earlyBirdTicketsLeft;
+			soldNormalTicket = normalTicketsLeft;
+			soldVipTicket = soldTickets - (earlyBirdTicketsLeft + normalTicketsLeft);
 
+			vipTicketsLeft = earlyBirdTicketsLeft + normalTicketsLeft + vipTicketsLeft - soldTickets;
+			earlyBirdTicketsLeft -= earlyBirdTicketsLeft;
+			normalTicketsLeft -= normalTicketsLeft;
 		}
 
-		if ((soldTickets > (ticketQuantity * 50) / 100 && (soldTickets <= ticketQuantity - (ticketQuantity * 15) / 100))) {
-			secondCategory = ticketQuantity - soldTickets - thirdCategory;
-			firstCategory -= firstCategory;
+		int totalTickets = earlyBirdTicketsLeft + normalTicketsLeft + vipTicketsLeft;
 
-		}
-		else if ((soldTickets > (ticketQuantity * 50) / 100 && (soldTickets >= ticketQuantity - (ticketQuantity * 35) / 100))) {
-			thirdCategory = firstCategory + secondCategory + thirdCategory - soldTickets;
-			firstCategory -= firstCategory;
-			secondCategory -= secondCategory;
+		tickets.put(category1, earlyBirdTicketsLeft);
+		tickets.put(category2, normalTicketsLeft);
+		tickets.put(category3, vipTicketsLeft);
 
-		}
-
-		System.out.println("\nTickets sold: " + soldTickets + "\n");
-
-		int totalTickets = firstCategory + secondCategory + thirdCategory;
-
-		tickets.put(category1, firstCategory);
-		tickets.put(category2, secondCategory);
-		tickets.put(category3, thirdCategory);
-
-		if (firstCategory == 0) {
-			throw new CategoryEarlyBirdTicketsSoldoutException();
-		}
-		if (totalTickets == 0) {
-			throw new TicketsSoldOutExcetion();
-		}
-
+		if (earlyBirdTicketsLeft == 0)
+			try {
+				throw new CategoryEarlyBirdTicketsSoldoutException();
+			}
+			catch (CategoryEarlyBirdTicketsSoldoutException e) {
+				System.out.println("Early Bird Tickets: SOLD OUT!\n");
+			}
+		if (normalTicketsLeft == 0)
+			try {
+				throw new CategoryNormalTicketsSoldoutException();
+			}
+			catch (CategoryNormalTicketsSoldoutException e) {
+				System.out.println("Normal Tickets: SOLD OUT!\n");
+			}
+		if (totalTickets == 0)
+			try {
+				throw new TicketsSoldOutExcetion();
+			}
+			catch (TicketsSoldOutExcetion e) {
+				System.out.println("SOLD OUT!\n");
+			}
+		System.out.println("Tickets sold: " + soldTickets + "\n");
+		System.out.println("Tickets left: ");
+		System.out.println("\tEarly bird tickets: " + earlyBirdTicketsLeft);
+		System.out.println("\tNormal tickets: " + normalTicketsLeft);
+		System.out.println("\tVip tickets: " + vipTicketsLeft);
 	}
 
+	public void calculateEarnings() {
+		System.out.println("Earnings by category: ");
+		System.out.println("\tEarly bird tickets: " + soldEarlyBirdTicket * earlyBirdPrice + " lei");
+		System.out.println("\tNormal  tickets: " + soldNormalTicket * normalTicketPrice + " lei");
+		System.out.println("\tVip tickets: " + soldVipTicket * vipTicketPrice + " lei");
+		System.out.println("Total earnings: "
+				+ ((soldEarlyBirdTicket * earlyBirdPrice) + (soldNormalTicket * normalTicketPrice) + (soldVipTicket * vipTicketPrice)) + " lei");
+	}
 }
